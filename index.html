@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perigee — Landing Page Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#05060B;
+    --void-2:#0C1020;
+    --ion:#5EEAD4;
+    --thruster:#FF8A3D;
+    --violet:#6D5BD0;
+    --mist:#C7CEE0;
+    --mist-dim:#7B8299;
+    --line:rgba(255,255,255,0.08);
+    --font-display:'Space Grotesk', sans-serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--void);
+    color:var(--mist);
+    font-family:var(--font-body);
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  .demo-banner{position:relative;z-index:10;background:var(--void-2);color:var(--mist-dim);text-align:center;font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.06em;padding:7px 12px;border-bottom:1px solid var(--line);}
+
+  /* Background layers */
+  .nebula{position:fixed;inset:-10%;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(ellipse 60% 45% at 25% 20%, rgba(109,91,208,0.35), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 80% 70%, rgba(94,234,212,0.12), transparent 60%),
+      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(12,16,32,0.9), var(--void) 70%);
+    filter:blur(2px);
+    transition:transform .4s ease-out;
+  }
+  .starfield{position:fixed;inset:-60px;z-index:0;pointer-events:none;transition:transform .5s ease-out;}
+  .starfield span{position:absolute;border-radius:50%;background:#fff;}
+
+  /* Header */
+  header{position:relative;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:22px 24px;}
+  .wordmark{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:500;font-size:1.05rem;letter-spacing:0.02em;color:#fff;}
+  .wordmark svg{width:26px;height:26px;}
+  .header-status{font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.08em;color:var(--mist-dim);display:none;}
+
+  /* Hero */
+  .hero{position:relative;z-index:5;min-height:calc(100vh - 90px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px 60px;}
+  .orbit-mark{width:120px;height:120px;margin-bottom:18px;}
+  .eyebrow{font-family:var(--font-mono);font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--ion);margin-bottom:18px;}
+  h1{font-family:var(--font-display);font-weight:700;font-size:clamp(2.1rem,8vw,4.2rem);color:#fff;line-height:1.08;margin:0 0 18px;max-width:780px;letter-spacing:-0.01em;}
+  .sub{max-width:480px;color:var(--mist-dim);font-size:1rem;line-height:1.6;margin:0 0 34px;}
+
+  .notify-form{display:flex;flex-direction:column;gap:10px;width:100%;max-width:380px;}
+  @media(min-width:480px){ .notify-form{flex-direction:row;} }
+  .notify-form input{flex:1;background:rgba(255,255,255,0.04);border:1px solid var(--line);border-radius:8px;padding:13px 16px;color:#fff;font-family:var(--font-body);font-size:0.92rem;outline:none;}
+  .notify-form input::placeholder{color:var(--mist-dim);}
+  .notify-form input:focus{border-color:var(--ion);}
+  .notify-form button{background:var(--ion);color:var(--void);border:none;border-radius:8px;padding:13px 20px;font-family:var(--font-mono);font-size:0.78rem;letter-spacing:0.06em;text-transform:uppercase;font-weight:500;cursor:pointer;white-space:nowrap;transition:background .15s ease;}
+  .notify-form button:hover{background:var(--thruster);}
+  .form-note{font-family:var(--font-mono);font-size:0.65rem;color:var(--mist-dim);margin-top:14px;letter-spacing:0.03em;}
+  .form-success{font-family:var(--font-mono);font-size:0.78rem;color:var(--ion);margin-top:14px;display:none;}
+
+  /* Telemetry footer */
+  .telemetry{position:relative;z-index:5;border-top:1px solid var(--line);padding:14px 20px;display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:center;font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.08em;color:var(--mist-dim);}
+  .telemetry .dot{width:6px;height:6px;border-radius:50%;background:var(--ion);display:inline-block;margin-right:6px;box-shadow:0 0 6px var(--ion);}
+
+  /* Load-in animation */
+  .reveal{opacity:0;transform:translateY(14px);animation:rise .8s ease forwards;}
+  @keyframes rise{to{opacity:1;transform:translateY(0);}}
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{animation:none;opacity:1;transform:none;}
+    .nebula,.starfield{transition:none;}
+    #orbitDot{animation:none !important;}
+  }
+
+  @media(min-width:760px){
+    .header-status{display:block;}
+  }
+</style>
+</head>
+<body>
+
+<div class="demo-banner">DEMO PREVIEW — concept direction for proposal, not the live site · swap palette/type once reference sites are confirmed</div>
+
+<div class="nebula" id="nebula"></div>
+<div class="starfield" id="starsFar"></div>
+<div class="starfield" id="starsNear"></div>
+
+<header>
+  <div class="wordmark reveal" style="animation-delay:.05s">
+    <svg viewBox="0 0 26 26" fill="none">
+      <ellipse cx="13" cy="13" rx="11" ry="5.5" stroke="var(--ion)" stroke-width="1.1" transform="rotate(-20 13 13)"/>
+      <circle cx="13" cy="13" r="2" fill="var(--ion)"/>
+    </svg>
+    PERIGEE
+  </div>
+  <div class="header-status reveal" style="animation-delay:.1s">SIGNAL: ACQUIRED</div>
+</header>
+
+<main class="hero">
+  <div class="orbit-mark reveal" style="animation-delay:.1s">
+    <svg viewBox="0 0 120 120" fill="none">
+      <ellipse cx="60" cy="60" rx="52" ry="22" stroke="var(--line)" stroke-width="1"/>
+      <ellipse cx="60" cy="60" rx="52" ry="22" stroke="var(--ion)" stroke-width="1" stroke-dasharray="4 6" opacity="0.5"/>
+      <circle id="orbitDot" r="3.5" fill="var(--ion)" style="filter:drop-shadow(0 0 6px var(--ion));">
+        <animateMotion dur="7s" repeatCount="indefinite"
+          path="M 112,60 A 52,22 0 1,1 8,60 A 52,22 0 1,1 112,60 Z"/>
+      </circle>
+    </svg>
+  </div>
+
+  <div class="eyebrow reveal" style="animation-delay:.18s">ORBITAL INFRASTRUCTURE, REIMAGINED</div>
+  <h1 class="reveal" style="animation-delay:.26s">The next orbit starts here.</h1>
+  <p class="sub reveal" style="animation-delay:.34s">Perigee is in active development — deep-space communications infrastructure for the next generation of satellites. Follow our trajectory.</p>
+
+  <form class="notify-form reveal" id="notifyForm" style="animation-delay:.42s">
+    <input type="email" placeholder="you@company.com" required>
+    <button type="submit">Track Launch</button>
+  </form>
+  <div class="form-note reveal" id="formNote" style="animation-delay:.48s">No spam. One email when we launch.</div>
+  <div class="form-success" id="formSuccess">Logged. We'll be in touch before launch.</div>
+</main>
+
+<footer class="telemetry">
+  <span><span class="dot"></span>STATUS: IN DEVELOPMENT</span>
+  <span>ALT 408 KM</span>
+  <span>VEL 7.66 KM/S</span>
+  <span id="coords">51.6028° N, 0.1278° W</span>
+</footer>
+
+<script>
+  /* Starfield generation */
+  function makeStars(container, count, sizeRange, opacityRange){
+    const frag = document.createDocumentFragment();
+    for(let i=0;i<count;i++){
+      const s = document.createElement('span');
+      const size = sizeRange[0] + Math.random()*(sizeRange[1]-sizeRange[0]);
+      s.style.width = size+'px';
+      s.style.height = size+'px';
+      s.style.left = (Math.random()*100)+'%';
+      s.style.top = (Math.random()*100)+'%';
+      s.style.opacity = (opacityRange[0] + Math.random()*(opacityRange[1]-opacityRange[0])).toFixed(2);
+      frag.appendChild(s);
+    }
+    container.appendChild(frag);
+  }
+  makeStars(document.getElementById('starsFar'), 90, [1,1.5], [0.2,0.5]);
+  makeStars(document.getElementById('starsNear'), 40, [1.5,2.5], [0.5,0.9]);
+
+  /* Mouse parallax (skipped if reduced motion) */
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduceMotion){
+    document.addEventListener('mousemove', (e)=>{
+      const x = (e.clientX / window.innerWidth - 0.5);
+      const y = (e.clientY / window.innerHeight - 0.5);
+      document.getElementById('nebula').style.transform = `translate(${x*14}px, ${y*14}px)`;
+      document.getElementById('starsFar').style.transform = `translate(${x*8}px, ${y*8}px)`;
+      document.getElementById('starsNear').style.transform = `translate(${x*20}px, ${y*20}px)`;
+    });
+  }
+
+  /* Telemetry coordinate tick */
+  let lat = 51.6028, lon = 0.1278;
+  setInterval(()=>{
+    lat += (Math.random()-0.5)*0.01;
+    lon += (Math.random()-0.5)*0.01;
+    document.getElementById('coords').textContent = `${lat.toFixed(4)}° N, ${Math.abs(lon).toFixed(4)}° W`;
+  }, 2200);
+
+  /* Form demo feedback */
+  document.getElementById('notifyForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    document.getElementById('formNote').style.display = 'none';
+    document.getElementById('formSuccess').style.display = 'block';
+    this.reset();
+  });
+</script>
+
+</body>
+</html>
